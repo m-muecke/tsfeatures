@@ -1,5 +1,6 @@
 //
-// Contains C++ implementations of slow-to-evaluate features in the "CompEngine" set
+// C++ implementations of slow-to-evaluate features in the "CompEngine" set
+// to speed up computational efficiency
 //
 // Author: Trent Henderson, 12 June 2026
 //
@@ -170,9 +171,6 @@ int localsimple_taures_cpp(NumericVector y,
       s += y[lp + i] - y[i];
     }
   } else {
-    // For lp == 1, lm(b ~ a) is rank-deficient and R's predict() falls back
-    // to the intercept-only fit (i.e. mean of the training window); we
-    // replicate that with slope = 0 when Sxx == 0.
     double xbar = (lp + 1) / 2.0;
     double Sxx  = lp * ((double)lp * lp - 1.0) / 12.0;
     for (int i = 0; i < nev; ++i) {
@@ -327,10 +325,10 @@ double spreadrandomlocal_meantaul_cpp(NumericVector y, int l, IntegerVector star
   
   double total = 0.0;
   for (int j = 0; j < numSegs; ++j) {
-    int ist = starts[j];                              // 1-based, from R's sample()
+    int ist = starts[j];
     if (ist < 1 || ist + l - 1 > N)
       stop("Start index %d out of range for segment length %d", ist, l);
-    total += firstzero_ac_raw(yp + (ist - 1), l);     // y[ist .. ist+l-1]
+    total += firstzero_ac_raw(yp + (ist - 1), l);
   }
   return total / (double)numSegs;
 }
