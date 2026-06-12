@@ -18,7 +18,7 @@ firstmin_ac(
 The lag of the first minimum
 }
 \description{
-Time of first minimum in the autocorrelation function from software package \code{hctsa}
+Accelerated implementation: for a complete (no-NA) series with no user-supplied \code{acfv}, dispatches to \code{firstmin_ac_cpp()}
 }
 \examples{
 firstmin_ac(WWWusage)

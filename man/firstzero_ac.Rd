@@ -17,6 +17,12 @@ The first zero crossing of the autocorrelation function
 \description{
 Search up to a maximum of the length of the time series
 }
+\details{
+Accelerated implementation: for a complete (no-NA) series with no
+user-supplied \code{acfv}, dispatches to \code{firstzero_ac_cpp()}, which
+computes autocorrelations lag-by-lag and stops at the first crossing.
+Otherwise the original pure-R logic is used.
+}
 \references{
 B.D. Fulcher and N.S. Jones. hctsa: A computational framework for automated time-series phenotyping using massive feature extraction. Cell Systems 5, 527 (2017).
 
