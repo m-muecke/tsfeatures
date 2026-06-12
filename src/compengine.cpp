@@ -194,7 +194,7 @@ int localsimple_taures_cpp(NumericVector y,
 // -----------------
 
 //' Fluctuation analysis
-//' @param y the input time series
+//' @param x the input time series
 // [[Rcpp::export]]
 double fluctanal_prop_r1_cpp(NumericVector x) {
   const int tauStep = 50;

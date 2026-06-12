@@ -37,7 +37,7 @@ localsimple_taures_cpp <- function(y, forecastMeth = "mean", trainLength = -1L) 
 }
 
 #' Fluctuation analysis
-#' @param y the input time series
+#' @param x the input time series
 fluctanal_prop_r1_cpp <- function(x) {
     .Call('_tsfeatures_fluctanal_prop_r1_cpp', PACKAGE = 'tsfeatures', x)
 }
