@@ -3,7 +3,6 @@
 \docType{package}
 \name{tsfeatures-package}
 \alias{tsfeatures-package}
-\alias{_PACKAGE}
 \title{tsfeatures: Time Series Feature Extraction}
 \description{
 Methods for extracting various features from time series data. The features provided are those from Hyndman, Wang and Laptev (2013) \doi{10.1109/ICDMW.2015.104}, Kang, Hyndman and Smith-Miles (2017) \doi{10.1016/j.ijforecast.2016.09.004} and from Fulcher, Little and Jones (2013) \doi{10.1098/rsif.2013.0048}. Features include spectral entropy, autocorrelations, measures of the strength of seasonality and trend, and so on. Users can also define their own feature functions.
@@ -38,6 +37,7 @@ Other contributors:
   \item Nikolay Laptev [contributor]
   \item J R Moorman [contributor]
   \item Bohan Zhang [contributor]
+  \item Trent Henderson [contributor]
 }
 
 }

@@ -14,6 +14,9 @@ Fits a polynomial of order 1 and then returns the
 range. The order of fluctuations is 2, corresponding to root mean
 square fluctuations.
 }
+\details{
+Accelerated implementation: computed in C++ via \code{fluctanal_prop_r1_cpp()}
+}
 \references{
 B.D. Fulcher and N.S. Jones. hctsa: A computational framework for automated time-series phenotyping using massive feature extraction. Cell Systems 5, 527 (2017).
 

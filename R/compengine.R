@@ -178,9 +178,9 @@ scal_features <- function(x) {
 #' @author Yangzhuoran Yang
 #' @export
 embed2_incircle <- function(
-  y,
-  boundary = NULL,
-  acfv = stats::acf(y, length(y) - 1, plot = FALSE, na.action = na.pass)
+    y,
+    boundary = NULL,
+    acfv = stats::acf(y, length(y) - 1, plot = FALSE, na.action = na.pass)
 ) {
   if (is.null(boundary)) {
     warning(
@@ -192,7 +192,7 @@ embed2_incircle <- function(
   xt <- y[1:(length(y) - tau)] # part of the time series
   xtp <- y[(1 + tau):length(y)] # time-lagged time series
   N <- length(y) - tau # Length of each time series subsegment
-
+  
   # CIRCLES (points inside a given circular boundary)
   return(sum(xtp^2 + xt^2 < boundary, na.rm = TRUE) / N)
 }
@@ -202,6 +202,11 @@ embed2_incircle <- function(
 #'
 #' Search up to a maximum of the length of the time series
 #'
+#' Accelerated implementation: for a complete (no-NA) series with no
+#' user-supplied \code{acfv}, dispatches to \code{firstzero_ac_cpp()}, which
+#' computes autocorrelations lag-by-lag and stops at the first crossing.
+#' Otherwise the original pure-R logic is used.
+#'
 #' @param y the input time series
 #' @param acfv vector of autocorrelation, if exist, used to avoid repeated computation.
 #' @return The first zero crossing of the autocorrelation function
@@ -210,10 +215,15 @@ embed2_incircle <- function(
 #' @author Yangzhuoran Yang
 #' @export
 firstzero_ac <- function(
-  y,
-  acfv = stats::acf(y, N - 1, plot = FALSE, na.action = na.pass)
+    y,
+    acfv = stats::acf(y, N - 1, plot = FALSE, na.action = na.pass)
 ) {
   N <- length(y)
+  # Fast path: lazy default `acfv` is never evaluated here, so the full
+  # N-1 lag ACF is skipped entirely.
+  if (missing(acfv) && !anyNA(y)) {
+    return(firstzero_ac_cpp(as.numeric(y)))
+  }
   tau <- which(acfv$acf[-1] < 0)
   if (length(tau) == 0L) {
     # Nothing to see here
@@ -241,8 +251,8 @@ firstzero_ac <- function(
 #' @author Yangzhuoran Yang
 #' @export
 ac_9 <- function(
-  y,
-  acfv = stats::acf(y, 9, plot = FALSE, na.action = na.pass)
+    y,
+    acfv = stats::acf(y, 9, plot = FALSE, na.action = na.pass)
 ) {
   acfv$acf[10]
 }
@@ -250,6 +260,7 @@ ac_9 <- function(
 # CO_firstmin_ac
 #' Time of first minimum in the autocorrelation function from software package \code{hctsa}
 #'
+#' Accelerated implementation: for a complete (no-NA) series with no user-supplied \code{acfv}, dispatches to \code{firstmin_ac_cpp()}
 #'
 #' @param x the input time series
 #' @param acfv vector of autocorrelation, if exist, used to avoid repeated computation.
@@ -261,11 +272,15 @@ ac_9 <- function(
 #' firstmin_ac(WWWusage)
 #' @export
 firstmin_ac <- function(
-  x,
-  acfv = stats::acf(x, lag.max = N - 1, plot = FALSE, na.action = na.pass)
+    x,
+    acfv = stats::acf(x, lag.max = N - 1, plot = FALSE, na.action = na.pass)
 ) {
   # hctsa uses autocorr in MatLab to calculate autocorrelation
   N <- length(x)
+  # Fast path: skips computing the full N-1 lag ACF.
+  if (missing(acfv) && !anyNA(x)) {
+    return(firstmin_ac_cpp(as.numeric(x)))
+  }
   # getting acf for all lags
   # possible delay when sample size is too big
   autoCorr <- numeric(N - 1)
@@ -279,8 +294,8 @@ firstmin_ac <- function(
       return(1)
     } else if (
       i > 2 &&
-        autoCorr[i - 2] > autoCorr[i - 1] &&
-        autoCorr[i - 1] < autoCorr[i]
+      autoCorr[i - 2] > autoCorr[i - 1] &&
+      autoCorr[i - 1] < autoCorr[i]
     ) {
       return(i - 1)
     }
@@ -331,23 +346,23 @@ motiftwo_entro3 <- function(y) {
   if (N < 5) {
     warning("Time series too short")
   }
-
+  
   r1 <- yBin == 1
   r0 <- yBin == 0
-
+  
   r1 <- r1[1:(length(r1) - 1)]
   r0 <- r0[1:(length(r0) - 1)]
-
+  
   r00 <- r0 & yBin[2:N] == 0
   r01 <- r0 & yBin[2:N] == 1
   r10 <- r1 & yBin[2:N] == 0
   r11 <- r1 & yBin[2:N] == 1
-
+  
   r00 <- r00[1:(length(r00) - 1)]
   r01 <- r01[1:(length(r01) - 1)]
   r10 <- r10[1:(length(r10) - 1)]
   r11 <- r11[1:(length(r11) - 1)]
-
+  
   r000 <- r00 & yBin[3:N] == 0
   r001 <- r00 & yBin[3:N] == 1
   r010 <- r01 & yBin[3:N] == 0
@@ -356,7 +371,7 @@ motiftwo_entro3 <- function(y) {
   r101 <- r10 & yBin[3:N] == 1
   r110 <- r11 & yBin[3:N] == 0
   r111 <- r11 & yBin[3:N] == 1
-
+  
   out.ddd <- mean(r000)
   out.ddu <- mean(r001)
   out.dud <- mean(r010)
@@ -409,6 +424,7 @@ f_entropy <- function(x) {
 #' The walker narrows the gap between its value and that
 #' of the time series by 10%.
 #'
+#' Accelerated implementation: the sequential walker recurrence is computed in C++ via \code{walker_propcross_cpp()}
 #'
 #' @param y the input time series
 #' @return fraction of time series length that walker crosses time series
@@ -419,21 +435,7 @@ f_entropy <- function(x) {
 #'
 #'
 walker_propcross <- function(y) {
-  N <- length(y)
-  p <- 0.1
-  #   walker starts at zero and narrows the gap between its position
-  #   and the time series value at that point by 0.1, to give the value at the subsequent time step
-  w <- numeric(N)
-  w[1] <- 0 # start at zero
-  for (i in 2:N) {
-    w[i] <- w[i - 1] + p * (y[i - 1] - w[i - 1])
-  }
-  out.sw_propcross <- sum(
-    (w[1:(N - 1)] - y[1:(N - 1)]) * (w[2:N] - y[2:N]) < 0,
-    na.rm = TRUE
-  ) /
-    (N - 1)
-  return(out.sw_propcross)
+  walker_propcross_cpp(as.numeric(y))
 }
 
 # pred --------------------------------------------------------------------
@@ -445,6 +447,8 @@ walker_propcross <- function(y) {
 #' Simple predictors using the past trainLength values of the time series to
 #' predict its next value.
 #'
+#' Accelerated implementation: for a complete (no-NA) series, dispatches to \code{localsimple_taures_cpp()}
+#'
 #' @param y the input time series
 #' @param forecastMeth the forecasting method, default to \code{mean}.
 #' \code{mean}: local mean prediction using the past trainLength time-series values.
@@ -454,22 +458,30 @@ walker_propcross <- function(y) {
 #' @return The first zero crossing of the autocorrelation function of the residuals
 #' @export
 localsimple_taures <- function(
-  y,
-  forecastMeth = c("mean", "lfit"),
-  trainLength = NULL
+    y,
+    forecastMeth = c("mean", "lfit"),
+    trainLength = NULL
 ) {
   forecastMeth <- match.arg(forecastMeth)
+  # Fast path
+  if (!anyNA(y)) {
+    return(localsimple_taures_cpp(
+      as.numeric(y),
+      forecastMeth,
+      if (is.null(trainLength)) -1L else as.integer(trainLength)
+    ))
+  }
   if (is.null(trainLength)) {
     lp <- switch(forecastMeth, mean = 1, lfit = firstzero_ac(y))
   }
-
+  
   N <- length(y)
   evalr <- (lp + 1):N
-
+  
   if (lp >= length(y)) {
     stop("Time series too short for forecasting in `localsimple_taures`")
   }
-
+  
   res <- numeric(length(evalr))
   if (forecastMeth == "mean") {
     for (i in 1:length(evalr)) {
@@ -502,6 +514,7 @@ localsimple_taures <- function(
 #' Embedding dimension is set to 5.
 #' The threshold is set to 0.3.
 #'
+#' Accelerated implementation: computed in C++ via \code{sampenc_cpp()}.
 #'
 #' @param y the input time series
 #' @references cf. "Physiological time-series analysis using approximate entropy and sample
@@ -526,6 +539,7 @@ sampen_first <- function(y) {
 #' http://www.physionet.org/physiotools/sampen/matlab/1.1/sampenc.m
 #' Code by DK Lake (dlake@virginia.edu), JR Moorman and Cao Hanqing.
 #'
+#' Accelerated implementation: the loops are in C++ via \code{sampenc_cpp()}
 #'
 #' @param y the input time series
 #' @param M embedding dimension
@@ -539,39 +553,7 @@ sampen_first <- function(y) {
 #' @author Yangzhuoran Yang
 #' @export
 sampenc <- function(y, M = 6, r = 0.3) {
-  N <- length(y)
-  lastrun <- numeric(N) # zeros(1,N)
-  run <- numeric(N) # zeros(1,N)
-  A <- numeric(M) # zeros(M,1)
-  B <- numeric(M) # zeros(M,1)
-  # Get counting:
-  for (i in 1:(N - 1)) {
-    # go through each point in the time series, counting matches
-    y1 <- y[i]
-    for (jj in 1:(N - i)) {
-      # compare to points through the rest of the time series
-      # Compare to future index, j:
-      j <- i + jj
-      # This future point, j, matches the time-series value at i:
-      if (isTRUE(abs(y[j] - y1) < r)) {
-        run[jj] <- lastrun[jj] + 1 # increase run count for this lag
-        M1 <- min(M, run[jj])
-
-        A[1:M1] <- A[1:M1] + 1
-        if (j < N) B[1:M1] <- B[1:M1] + 1
-      } else {
-        run[jj] <- 0
-      }
-    }
-    for (j in 1:(N - i)) {
-      lastrun[j] <- run[j]
-    }
-  }
-  # Calculate for m <- 2
-  # NN <- N*(N-1)/2
-  p <- A[2] / B[1]
-  e <- -log(p)
-  return(e)
+  sampenc_cpp(as.numeric(y), as.integer(M), r)
 }
 
 # stationarity ------------------------------------------------------------
@@ -603,6 +585,7 @@ std1st_der <- function(y) {
 #' 100 time-series segments of length \code{l} are selected at random from the time series and
 #' the mean of the first zero-crossings of the autocorrelation function in each segment is calculated.
 #'
+#' Accelerated implementation: for a complete (no-NA) series, dispatches to \code{spreadrandomlocal_meantaul_cpp()}
 #'
 #' @param y the input time series
 #' @param l the length of local time-series segments to analyse as a positive integer. Can also be a specified character string: "ac2": twice the first zero-crossing of the autocorrelation function
@@ -626,16 +609,21 @@ spreadrandomlocal_meantaul <- function(y, l = 50) {
     )
     return(NA_real_)
   }
-
+  
+  if (!anyNA(y)) {
+    ists <- sample(N - 1 - l, numSegs, replace = TRUE)
+    return(spreadrandomlocal_meantaul_cpp(
+      as.numeric(y), as.integer(l), as.integer(ists)
+    ))
+  }
+  
   qs <- numeric(numSegs)
-
+  
   for (j in 1:numSegs) {
-    # pick a range
-    # in this implementation, ranges CAN overlap
-    ist <- sample(N - 1 - l, 1) # random start point (not exceeding the endpoint)
-    ifh <- ist + l - 1 # finish index
-    rs <- ist:ifh # sample range (from starting to finishing index)
-    ysub <- y[rs] # subsection of the time series
+    ist <- sample(N - 1 - l, 1)
+    ifh <- ist + l - 1
+    rs <- ist:ifh
+    ysub <- y[rs]
     taul <- firstzero_ac(ysub)
     qs[j] <- taul
   }
@@ -722,7 +710,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
   if (length(thr) == 0) {
     stop("peculiar time series")
   }
-
+  
   msDt <- numeric(length(thr))
   msDtp <- numeric(length(thr))
   for (i in 1:length(thr)) {
@@ -730,7 +718,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
     # Construct a time series consisting of inter-event intervals for parts
     # of the time serie exceeding the threshold, th
     r <- which(abs(y) >= th)
-
+    
     Dt_exc <- diff(r) # Delta t (interval) time series exceeding threshold
     msDt[i] <- median(r) / (N / 2) - 1
     msDtp[i] <- length(Dt_exc) / tot * 100
@@ -739,7 +727,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
     # that are actually used in
     # calculation
   }
-
+  
   # Trim off where the statistic power is lacking: less than 2% of data
   # included
   trimthr <- 2 # percent
@@ -751,7 +739,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
   } else {
     stop("the statistic power is lacking: less than 2% of data included")
   }
-
+  
   out.mdrmd <- median(msDt)
   return(out.mdrmd)
 }
@@ -765,6 +753,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
 #' range. The order of fluctuations is 2, corresponding to root mean
 #' square fluctuations.
 #'
+#' Accelerated implementation: computed in C++ via \code{fluctanal_prop_r1_cpp()}
 #'
 #' @param x the input time series (or any vector)
 #' @references B.D. Fulcher and N.S. Jones. hctsa: A computational framework for automated time-series phenotyping using massive feature extraction. Cell Systems 5, 527 (2017).
@@ -772,86 +761,5 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
 #' @author Yangzhuoran Yang
 #' @export
 fluctanal_prop_r1 <- function(x) {
-  q <- 2
-  tauStep <- 50
-  k <- 1
-
-  N <- length(x)
-  x_NA0 <- ifelse(!is.na(x), x, 0)
-
-  y <- cumsum(x_NA0)
-  taur <- unique(round(exp(seq(
-    from = log(5),
-    to = log(floor(N / 2)),
-    length.out = tauStep
-  ))))
-  ntau <- length(taur)
-  if (ntau < 8) {
-    # fewer than 8 points
-    stop(
-      "This time series is too short to analyse using this fluctuation analysis"
-    )
-  }
-
-  Fl <- numeric(ntau)
-
-  for (i in 1:ntau) {
-    # buffer the time series at the scale tau
-    tau <- taur[i] # the scale on which to compute fluctuations
-    y_buff <- split(y, ceiling(seq_along(y) / tau))
-
-    if (length(y_buff) > floor(N / tau)) {
-      # zero-padded, remove trailing set of points...
-      y_buff <- y_buff[-length(y_buff)]
-    }
-
-    # analysed length of time series (with trailing end-points removed)
-    nn <- length(y_buff) * tau
-    tt <- (1:tau) # faux time range
-
-    for (j in 1:length(y_buff)) {
-      # fit a polynomial of order k in each subsegment
-      lm.tt <- lm(lmy ~ tt, data = data.frame(tt, lmy = y_buff[[j]]))
-      # remove the trend, store back in y_buff
-      y_buff[[j]] <- residuals(lm.tt)
-    }
-
-    tem <- sapply(y_buff, range)
-    y_dt <- tem[2, ] - tem[1, ]
-
-    # Compute fluctuation function:
-
-    Fl[i] <- (mean(y_dt^q))^(1 / q)
-  }
-  logtt <- log(taur)
-  logFF <- log(Fl)
-  ntt <- ntau
-
-  ## Try assuming two components (2 distinct scaling regimes)
-  # Move through, and fit a straight line to loglog before and after each point.
-  # Find point with the minimum sum of squared errors
-  # First spline interpolate to get an even sampling of the interval
-  # (currently, in the log scale, there are relatively more at large scales
-  # Determine the errors
-  sserr <- rep(NA, ntt) # don't choose the end points
-  minPoints <- 6
-  for (i in minPoints:(ntt - minPoints)) {
-    r1 <- 1:i
-    # p1 <- polyfit(logtt(r1),logFF(r1),1)
-    p1 <- lm(y ~ x, data = data.frame(x = logtt[r1], y = logFF[r1]))
-    r2 <- i:ntt
-    # p2 <- polyfit(logtt(r2),logFF(r2),1)
-    p2 <- lm(y ~ x, data = data.frame(x = logtt[r2], y = logFF[r2]))
-    # Sum of errors from fitting lines to both segments:
-    sserr[i] <- norm(-residuals(p1), type = "2") +
-      norm(-residuals(p2), type = "2")
-  }
-
-  # breakPt is the point where it's best to fit a line before and another line after
-  breakPt <- which.min(sserr)
-  r1 <- 1:breakPt
-  r2 <- breakPt:ntt
-
-  prop_r1 <- length(r1) / ntt
-  return(prop_r1)
+  fluctanal_prop_r1_cpp(as.numeric(x))
 }

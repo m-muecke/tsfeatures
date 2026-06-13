@@ -19,9 +19,9 @@ spectral density, estimated using an AR model.
 \details{
 The \emph{spectral entropy} equals the Shannon entropy of the spectral density
 \eqn{f_x(\lambda)} of a stationary process \eqn{x_t}:
-\deqn{
-H_s(x_t) = - \int_{-\pi}^{\pi} f_x(\lambda) \log f_x(\lambda) d \lambda,
-}
+
+\deqn{H_s(x_t) = - \int_{-\pi}^{\pi} f_x(\lambda) \log f_x(\lambda) d \lambda,}
+
 where the density is normalized such that
 \eqn{\int_{-\pi}^{\pi} f_x(\lambda) d \lambda = 1}.
 An estimate of \eqn{f(\lambda)} can be obtained using \code{\link[stats]{spec.ar}} with

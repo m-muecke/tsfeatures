@@ -10,4 +10,6 @@
 
 ## usethis namespace: start
 ## usethis namespace: end
+#' @useDynLib tsfeatures
+#' @importFrom Rcpp sourceCpp
 NULL

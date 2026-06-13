@@ -18,6 +18,8 @@ http://www.physionet.org/physiotools/sampen/matlab/1.1/sampenc.m
 \details{
 Embedding dimension is set to 5.
 The threshold is set to 0.3.
+
+Accelerated implementation: computed in C++ via \code{sampenc_cpp()}.
 }
 \references{
 cf. "Physiological time-series analysis using approximate entropy and sample

@@ -23,3 +23,6 @@ The first zero crossing of the autocorrelation function of the residuals
 Simple predictors using the past trainLength values of the time series to
 predict its next value.
 }
+\details{
+Accelerated implementation: for a complete (no-NA) series, dispatches to \code{localsimple_taures_cpp()}
+}

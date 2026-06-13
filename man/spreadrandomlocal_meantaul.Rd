@@ -18,6 +18,9 @@ mean of the first zero-crossings of the autocorrelation function
 100 time-series segments of length \code{l} are selected at random from the time series and
 the mean of the first zero-crossings of the autocorrelation function in each segment is calculated.
 }
+\details{
+Accelerated implementation: for a complete (no-NA) series, dispatches to \code{spreadrandomlocal_meantaul_cpp()}
+}
 \references{
 B.D. Fulcher and N.S. Jones. hctsa: A computational framework for automated time-series phenotyping using massive feature extraction. Cell Systems 5, 527 (2017).
 

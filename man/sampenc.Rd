@@ -19,6 +19,9 @@ http://physionet.org/physiotools/sampen/
 http://www.physionet.org/physiotools/sampen/matlab/1.1/sampenc.m
 Code by DK Lake (dlake@virginia.edu), JR Moorman and Cao Hanqing.
 }
+\details{
+Accelerated implementation: the loops are in C++ via \code{sampenc_cpp()}
+}
 \references{
 cf. "Physiological time-series analysis using approximate entropy and sample
 entropy", J. S. Richman and J. R. Moorman, Am. J. Physiol. Heart Circ.
