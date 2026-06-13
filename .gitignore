@@ -21,3 +21,9 @@ vignettes/*.pdf
 README_cache
 inst/doc
 docs
+
+# Binaries
+
+src/*.o
+src/*.so
+src/*.dll

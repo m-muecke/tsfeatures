@@ -57,8 +57,8 @@ static int firstzero_ac_raw(const double* y, int N) {
   return 0;
 }
 
-//' First zero crossing of the autocorrelation function
-//' @param y the input time series
+// First zero crossing of the autocorrelation function
+// @param y the input time series
 // [[Rcpp::export]]
 int firstzero_ac_cpp(NumericVector y) {
   return firstzero_ac_raw(REAL(y), y.size());
@@ -68,10 +68,10 @@ int firstzero_ac_cpp(NumericVector y) {
 // sampenc / sampen_first
 // ----------------------
 
-//' Sample entropy counting
-//' @param y the input time series
-//' @param M embedding dimension
-//' @param r threshold
+// Sample entropy counting
+// @param y the input time series
+// @param M embedding dimension
+// @param r threshold
 // [[Rcpp::export]]
 double sampenc_cpp(NumericVector y, int M = 6, double r = 0.3) {
   int N = y.size();
@@ -101,8 +101,8 @@ double sampenc_cpp(NumericVector y, int M = 6, double r = 0.3) {
   return -std::log(p);
 }
 
-//' C++ replacement for sampen_first
-//' @param y the input time series
+// C++ replacement for sampen_first
+// @param y the input time series
 // [[Rcpp::export]]
 double sampen_first_cpp(NumericVector y) {
   return sampenc_cpp(y, 6, 0.3);
@@ -112,9 +112,9 @@ double sampen_first_cpp(NumericVector y) {
 // walker_propcross
 // ----------------
 
-//' Hypothetical walker crossing fraction
-//' @param y the input time series
-//' @param p the particle gap
+// Hypothetical walker crossing fraction
+// @param y the input time series
+// @param p the particle gap
 // [[Rcpp::export]]
 double walker_propcross_cpp(NumericVector y, double p = 0.1) {
   int N = y.size();
@@ -135,10 +135,10 @@ double walker_propcross_cpp(NumericVector y, double p = 0.1) {
 // localsimple_taures
 // ------------------
 
-//' Local simple forecasting residual tau
-//' @param y the input time series
-//' @param forecastMeth the forecasting method, defaults to \code{mean}.
-//' @param trainLength the training length. Defaults to \code{-1}
+// Local simple forecasting residual tau
+// @param y the input time series
+// @param forecastMeth the forecasting method, defaults to \code{mean}.
+// @param trainLength the training length. Defaults to \code{-1}
 // [[Rcpp::export]]
 int localsimple_taures_cpp(NumericVector y,
                            std::string forecastMeth = "mean",
@@ -193,8 +193,8 @@ int localsimple_taures_cpp(NumericVector y,
 // fluctanal_prop_r1
 // -----------------
 
-//' Fluctuation analysis
-//' @param x the input time series
+// Fluctuation analysis
+// @param x the input time series
 // [[Rcpp::export]]
 double fluctanal_prop_r1_cpp(NumericVector x) {
   const int tauStep = 50;
@@ -277,8 +277,8 @@ double fluctanal_prop_r1_cpp(NumericVector x) {
 // firstmin_ac
 // -----------
 
-//' First local minimum of the ACF
-//' @param y the input time series
+// First local minimum of the ACF
+// @param y the input time series
 // [[Rcpp::export]]
 double firstmin_ac_cpp(NumericVector y) {
   int N = y.size();
@@ -311,10 +311,10 @@ double firstmin_ac_cpp(NumericVector y) {
 // spreadrandomlocal_meantaul
 // --------------------------
 
-//' Bootstrap stationarity measure
-//' @param y the input time series
-//' @param l the length of local time-series segments to analyse as a positive integer. Can also be a specified character string: "ac2": twice the first zero-crossing of the autocorrelation function
-//' @param starts start indices
+// Bootstrap stationarity measure
+// @param y the input time series
+// @param l the length of local time-series segments to analyse as a positive integer. Can also be a specified character string: "ac2": twice the first zero-crossing of the autocorrelation function
+// @param starts start indices
 // [[Rcpp::export]]
 double spreadrandomlocal_meantaul_cpp(NumericVector y, int l, IntegerVector starts) {
   int N = y.size();
