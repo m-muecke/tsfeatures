@@ -203,7 +203,7 @@ embed2_incircle <- function(
 #' Search up to a maximum of the length of the time series
 #'
 #' Accelerated implementation: for a complete (no-NA) series with no
-#' user-supplied \code{acfv}, dispatches to \code{firstzero_ac_cpp()}, which
+#' user-supplied \code{acfv}, dispatches to C++, which
 #' computes autocorrelations lag-by-lag and stops at the first crossing.
 #' Otherwise the original pure-R logic is used.
 #'
@@ -447,7 +447,7 @@ walker_propcross <- function(y) {
 #' Simple predictors using the past trainLength values of the time series to
 #' predict its next value.
 #'
-#' Accelerated implementation: for a complete (no-NA) series, dispatches to \code{localsimple_taures_cpp()}
+#' Accelerated implementation: for a complete (no-NA) series, dispatches to C++.
 #'
 #' @param y the input time series
 #' @param forecastMeth the forecasting method, default to \code{mean}.
@@ -514,7 +514,7 @@ localsimple_taures <- function(
 #' Embedding dimension is set to 5.
 #' The threshold is set to 0.3.
 #'
-#' Accelerated implementation: computed in C++ via \code{sampenc_cpp()}.
+#' Accelerated implementation: computed in C++.
 #'
 #' @param y the input time series
 #' @references cf. "Physiological time-series analysis using approximate entropy and sample
@@ -539,7 +539,7 @@ sampen_first <- function(y) {
 #' http://www.physionet.org/physiotools/sampen/matlab/1.1/sampenc.m
 #' Code by DK Lake (dlake@virginia.edu), JR Moorman and Cao Hanqing.
 #'
-#' Accelerated implementation: the loops are in C++ via \code{sampenc_cpp()}
+#' Accelerated implementation: the loops are in C++.
 #'
 #' @param y the input time series
 #' @param M embedding dimension
@@ -585,7 +585,7 @@ std1st_der <- function(y) {
 #' 100 time-series segments of length \code{l} are selected at random from the time series and
 #' the mean of the first zero-crossings of the autocorrelation function in each segment is calculated.
 #'
-#' Accelerated implementation: for a complete (no-NA) series, dispatches to \code{spreadrandomlocal_meantaul_cpp()}
+#' Accelerated implementation: for a complete (no-NA) series, dispatches to C++.
 #'
 #' @param y the input time series
 #' @param l the length of local time-series segments to analyse as a positive integer. Can also be a specified character string: "ac2": twice the first zero-crossing of the autocorrelation function
@@ -753,7 +753,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
 #' range. The order of fluctuations is 2, corresponding to root mean
 #' square fluctuations.
 #'
-#' Accelerated implementation: computed in C++ via \code{fluctanal_prop_r1_cpp()}
+#' Accelerated implementation: computed in C++.
 #'
 #' @param x the input time series (or any vector)
 #' @references B.D. Fulcher and N.S. Jones. hctsa: A computational framework for automated time-series phenotyping using massive feature extraction. Cell Systems 5, 527 (2017).
