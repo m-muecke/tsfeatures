@@ -20,7 +20,7 @@ http://www.physionet.org/physiotools/sampen/matlab/1.1/sampenc.m
 Code by DK Lake (dlake@virginia.edu), JR Moorman and Cao Hanqing.
 }
 \details{
-Accelerated implementation: the loops are in C++ via \code{sampenc_cpp()}
+Accelerated implementation: the loops are in C++.
 }
 \references{
 cf. "Physiological time-series analysis using approximate entropy and sample

@@ -19,7 +19,7 @@ mean of the first zero-crossings of the autocorrelation function
 the mean of the first zero-crossings of the autocorrelation function in each segment is calculated.
 }
 \details{
-Accelerated implementation: for a complete (no-NA) series, dispatches to \code{spreadrandomlocal_meantaul_cpp()}
+Accelerated implementation: for a complete (no-NA) series, dispatches to C++.
 }
 \references{
 B.D. Fulcher and N.S. Jones. hctsa: A computational framework for automated time-series phenotyping using massive feature extraction. Cell Systems 5, 527 (2017).

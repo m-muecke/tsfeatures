@@ -19,7 +19,7 @@ The walker narrows the gap between its value and that
 of the time series by 10\%.
 }
 \details{
-Accelerated implementation: the sequential walker recurrence is computed in C++ via \code{walker_propcross_cpp()}
+Accelerated implementation: the sequential walker recurrence is computed in C++.
 }
 \references{
 B.D. Fulcher and N.S. Jones. hctsa: A computational framework for automated time-series phenotyping using massive feature extraction. Cell Systems 5, 527 (2017).

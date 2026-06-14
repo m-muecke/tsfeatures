@@ -21,6 +21,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Rob Hyndman \email{Rob.Hyndman@monash.edu} (\href{https://orcid.org/0000-0002-2140-5352}{ORCID})
   \item Yanfei Kang (\href{https://orcid.org/0000-0001-8769-6650}{ORCID})
   \item Pablo Montero-Manso \email{p.montero.manso@udc.es}
   \item Mitchell O'Hara-Wild (\href{https://orcid.org/0000-0001-6729-7695}{ORCID})
@@ -33,11 +34,11 @@ Other contributors:
 \itemize{
   \item Souhaib Ben Taieb [contributor]
   \item Cao Hanqing [contributor]
+  \item Trent Henderson [contributor]
   \item D K Lake [contributor]
   \item Nikolay Laptev [contributor]
   \item J R Moorman [contributor]
   \item Bohan Zhang [contributor]
-  \item Trent Henderson [contributor]
 }
 
 }

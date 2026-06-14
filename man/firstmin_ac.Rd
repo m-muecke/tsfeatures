@@ -18,7 +18,7 @@ firstmin_ac(
 The lag of the first minimum
 }
 \description{
-Accelerated implementation: for a complete (no-NA) series with no user-supplied \code{acfv}, dispatches to \code{firstmin_ac_cpp()}
+Accelerated implementation: for a complete (no-NA) series with no user-supplied \code{acfv}, dispatches to C++.
 }
 \examples{
 firstmin_ac(WWWusage)

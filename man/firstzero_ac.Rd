@@ -19,7 +19,7 @@ Search up to a maximum of the length of the time series
 }
 \details{
 Accelerated implementation: for a complete (no-NA) series with no
-user-supplied \code{acfv}, dispatches to \code{firstzero_ac_cpp()}, which
+user-supplied \code{acfv}, dispatches to C++, which
 computes autocorrelations lag-by-lag and stops at the first crossing.
 Otherwise the original pure-R logic is used.
 }
