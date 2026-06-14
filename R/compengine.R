@@ -178,9 +178,9 @@ scal_features <- function(x) {
 #' @author Yangzhuoran Yang
 #' @export
 embed2_incircle <- function(
-    y,
-    boundary = NULL,
-    acfv = stats::acf(y, length(y) - 1, plot = FALSE, na.action = na.pass)
+  y,
+  boundary = NULL,
+  acfv = stats::acf(y, length(y) - 1, plot = FALSE, na.action = na.pass)
 ) {
   if (is.null(boundary)) {
     warning(
@@ -192,7 +192,7 @@ embed2_incircle <- function(
   xt <- y[1:(length(y) - tau)] # part of the time series
   xtp <- y[(1 + tau):length(y)] # time-lagged time series
   N <- length(y) - tau # Length of each time series subsegment
-  
+
   # CIRCLES (points inside a given circular boundary)
   return(sum(xtp^2 + xt^2 < boundary, na.rm = TRUE) / N)
 }
@@ -215,8 +215,8 @@ embed2_incircle <- function(
 #' @author Yangzhuoran Yang
 #' @export
 firstzero_ac <- function(
-    y,
-    acfv = stats::acf(y, N - 1, plot = FALSE, na.action = na.pass)
+  y,
+  acfv = stats::acf(y, N - 1, plot = FALSE, na.action = na.pass)
 ) {
   N <- length(y)
   # Fast path: lazy default `acfv` is never evaluated here, so the full
@@ -251,8 +251,8 @@ firstzero_ac <- function(
 #' @author Yangzhuoran Yang
 #' @export
 ac_9 <- function(
-    y,
-    acfv = stats::acf(y, 9, plot = FALSE, na.action = na.pass)
+  y,
+  acfv = stats::acf(y, 9, plot = FALSE, na.action = na.pass)
 ) {
   acfv$acf[10]
 }
@@ -260,7 +260,7 @@ ac_9 <- function(
 # CO_firstmin_ac
 #' Time of first minimum in the autocorrelation function from software package \code{hctsa}
 #'
-#' Accelerated implementation: for a complete (no-NA) series with no user-supplied \code{acfv}, dispatches to \code{firstmin_ac_cpp()}
+#' Accelerated implementation: for a complete (no-NA) series with no user-supplied \code{acfv}, dispatches to C++.
 #'
 #' @param x the input time series
 #' @param acfv vector of autocorrelation, if exist, used to avoid repeated computation.
@@ -272,8 +272,8 @@ ac_9 <- function(
 #' firstmin_ac(WWWusage)
 #' @export
 firstmin_ac <- function(
-    x,
-    acfv = stats::acf(x, lag.max = N - 1, plot = FALSE, na.action = na.pass)
+  x,
+  acfv = stats::acf(x, lag.max = N - 1, plot = FALSE, na.action = na.pass)
 ) {
   # hctsa uses autocorr in MatLab to calculate autocorrelation
   N <- length(x)
@@ -294,8 +294,8 @@ firstmin_ac <- function(
       return(1)
     } else if (
       i > 2 &&
-      autoCorr[i - 2] > autoCorr[i - 1] &&
-      autoCorr[i - 1] < autoCorr[i]
+        autoCorr[i - 2] > autoCorr[i - 1] &&
+        autoCorr[i - 1] < autoCorr[i]
     ) {
       return(i - 1)
     }
@@ -346,23 +346,23 @@ motiftwo_entro3 <- function(y) {
   if (N < 5) {
     warning("Time series too short")
   }
-  
+
   r1 <- yBin == 1
   r0 <- yBin == 0
-  
+
   r1 <- r1[1:(length(r1) - 1)]
   r0 <- r0[1:(length(r0) - 1)]
-  
+
   r00 <- r0 & yBin[2:N] == 0
   r01 <- r0 & yBin[2:N] == 1
   r10 <- r1 & yBin[2:N] == 0
   r11 <- r1 & yBin[2:N] == 1
-  
+
   r00 <- r00[1:(length(r00) - 1)]
   r01 <- r01[1:(length(r01) - 1)]
   r10 <- r10[1:(length(r10) - 1)]
   r11 <- r11[1:(length(r11) - 1)]
-  
+
   r000 <- r00 & yBin[3:N] == 0
   r001 <- r00 & yBin[3:N] == 1
   r010 <- r01 & yBin[3:N] == 0
@@ -371,7 +371,7 @@ motiftwo_entro3 <- function(y) {
   r101 <- r10 & yBin[3:N] == 1
   r110 <- r11 & yBin[3:N] == 0
   r111 <- r11 & yBin[3:N] == 1
-  
+
   out.ddd <- mean(r000)
   out.ddu <- mean(r001)
   out.dud <- mean(r010)
@@ -424,7 +424,7 @@ f_entropy <- function(x) {
 #' The walker narrows the gap between its value and that
 #' of the time series by 10%.
 #'
-#' Accelerated implementation: the sequential walker recurrence is computed in C++ via \code{walker_propcross_cpp()}
+#' Accelerated implementation: the sequential walker recurrence is computed in C++.
 #'
 #' @param y the input time series
 #' @return fraction of time series length that walker crosses time series
@@ -458,9 +458,9 @@ walker_propcross <- function(y) {
 #' @return The first zero crossing of the autocorrelation function of the residuals
 #' @export
 localsimple_taures <- function(
-    y,
-    forecastMeth = c("mean", "lfit"),
-    trainLength = NULL
+  y,
+  forecastMeth = c("mean", "lfit"),
+  trainLength = NULL
 ) {
   forecastMeth <- match.arg(forecastMeth)
   # Fast path
@@ -474,14 +474,14 @@ localsimple_taures <- function(
   if (is.null(trainLength)) {
     lp <- switch(forecastMeth, mean = 1, lfit = firstzero_ac(y))
   }
-  
+
   N <- length(y)
   evalr <- (lp + 1):N
-  
+
   if (lp >= length(y)) {
     stop("Time series too short for forecasting in `localsimple_taures`")
   }
-  
+
   res <- numeric(length(evalr))
   if (forecastMeth == "mean") {
     for (i in 1:length(evalr)) {
@@ -609,16 +609,18 @@ spreadrandomlocal_meantaul <- function(y, l = 50) {
     )
     return(NA_real_)
   }
-  
+
   if (!anyNA(y)) {
     ists <- sample(N - 1 - l, numSegs, replace = TRUE)
     return(spreadrandomlocal_meantaul_cpp(
-      as.numeric(y), as.integer(l), as.integer(ists)
+      as.numeric(y),
+      as.integer(l),
+      as.integer(ists)
     ))
   }
-  
+
   qs <- numeric(numSegs)
-  
+
   for (j in 1:numSegs) {
     ist <- sample(N - 1 - l, 1)
     ifh <- ist + l - 1
@@ -710,7 +712,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
   if (length(thr) == 0) {
     stop("peculiar time series")
   }
-  
+
   msDt <- numeric(length(thr))
   msDtp <- numeric(length(thr))
   for (i in 1:length(thr)) {
@@ -718,7 +720,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
     # Construct a time series consisting of inter-event intervals for parts
     # of the time serie exceeding the threshold, th
     r <- which(abs(y) >= th)
-    
+
     Dt_exc <- diff(r) # Delta t (interval) time series exceeding threshold
     msDt[i] <- median(r) / (N / 2) - 1
     msDtp[i] <- length(Dt_exc) / tot * 100
@@ -727,7 +729,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
     # that are actually used in
     # calculation
   }
-  
+
   # Trim off where the statistic power is lacking: less than 2% of data
   # included
   trimthr <- 2 # percent
@@ -739,7 +741,7 @@ outlierinclude_mdrmd <- function(y, zscored = TRUE) {
   } else {
     stop("the statistic power is lacking: less than 2% of data included")
   }
-  
+
   out.mdrmd <- median(msDt)
   return(out.mdrmd)
 }
