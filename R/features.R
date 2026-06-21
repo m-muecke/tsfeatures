@@ -208,7 +208,7 @@ flat_spots <- function(x) {
     silent = TRUE
   )
   if ("try-error" %in% class(cutx)) {
-    fspots <- NA
+    return(c(flat_spots = NA_real_))
   } else {
     rlex <- rle(cutx)
     # Any flat spot
