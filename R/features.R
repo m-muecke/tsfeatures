@@ -273,7 +273,7 @@ unitroot_kpss <- function(x, ...) {
   kpss <- try(urca::ur.kpss(x, ...)@teststat, silent = TRUE)
   if ("try-error" %in% class(kpss)) {
     warning("Error in unitroot_kpss")
-    kpss <- NA
+    kpss <- NA_real_
   }
   return(kpss)
 }
@@ -284,7 +284,7 @@ unitroot_pp <- function(x, ...) {
   pp <- try(urca::ur.pp(x, ...)@teststat, silent = TRUE)
   if ("try-error" %in% class(pp)) {
     warning("Error in unitroot_pp")
-    pp <- NA
+    pp <- NA_real_
   }
   return(pp)
 }

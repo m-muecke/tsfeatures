@@ -159,7 +159,7 @@ hw_parameters <- function(x) {
   # parameter estimates of holt winters additive trend seasonal model
   hw_fit <- purrr::possibly(
     forecast::ets,
-    list(par = c(alpha = NA, beta = NA, gamma = NA))
+    list(par = c(alpha = NA_real_, beta = NA_real_, gamma = NA_real_))
   )(x, model = c("AAA"))
   return(hw_fit$par[c("alpha", "beta", "gamma")])
 }

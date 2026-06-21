@@ -44,7 +44,7 @@ entropy <- function(x) {
     n.freq = ceiling(length(x) / 2 + 1)
   ))
   if ("try-error" %in% class(spec)) {
-    entropy <- NA
+    entropy <- NA_real_
   } else {
     fx <- c(rev(spec$spec[-1]), spec$spec) / length(x)
     fx <- fx / sum(fx)
