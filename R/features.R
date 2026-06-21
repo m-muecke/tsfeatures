@@ -69,7 +69,7 @@ max_level_shift <- function(
   suppressWarnings(
     rollmean <- try(RcppRoll::roll_mean(x, width, na.rm = TRUE), silent = TRUE)
   )
-  if ("try-error" %in% class(rollmean)) {
+  if (inherits(rollmean, "try-error")) {
     maxmeans <- NA_real_
     maxidx <- NA_real_
   } else {
@@ -98,7 +98,7 @@ max_var_shift <- function(
   suppressWarnings(
     rollvar <- try(RcppRoll::roll_var(x, width, na.rm = TRUE), silent = TRUE)
   )
-  if ("try-error" %in% class(rollvar)) {
+  if (inherits(rollvar, "try-error")) {
     maxvar <- NA_real_
     maxidx <- NA_real_
   } else {
@@ -207,7 +207,7 @@ flat_spots <- function(x) {
     cut(x, breaks = 10, include.lowest = TRUE, labels = FALSE),
     silent = TRUE
   )
-  if ("try-error" %in% class(cutx)) {
+  if (inherits(cutx, "try-error")) {
     fspots <- NA
   } else {
     rlex <- rle(cutx)
@@ -271,7 +271,7 @@ hurst <- function(x) {
 #' @export
 unitroot_kpss <- function(x, ...) {
   kpss <- try(urca::ur.kpss(x, ...)@teststat, silent = TRUE)
-  if ("try-error" %in% class(kpss)) {
+  if (inherits(kpss, "try-error")) {
     warning("Error in unitroot_kpss")
     kpss <- NA
   }
@@ -282,7 +282,7 @@ unitroot_kpss <- function(x, ...) {
 #' @export
 unitroot_pp <- function(x, ...) {
   pp <- try(urca::ur.pp(x, ...)@teststat, silent = TRUE)
-  if ("try-error" %in% class(pp)) {
+  if (inherits(pp, "try-error")) {
     warning("Error in unitroot_pp")
     pp <- NA
   }

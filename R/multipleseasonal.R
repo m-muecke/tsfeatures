@@ -12,10 +12,10 @@
 #' @export
 
 stl_features <- function(x, ...) {
-  if ("msts" %in% class(x)) {
+  if (inherits(x, "msts")) {
     msts <- attributes(x)$msts
     nperiods <- length(msts)
-  } else if ("ts" %in% class(x)) {
+  } else if (inherits(x, "ts")) {
     msts <- frequency(x)
     nperiods <- msts > 1
     if (length(x) <= 2 * msts) {
