@@ -43,8 +43,8 @@ entropy <- function(x) {
     method = "burg",
     n.freq = ceiling(length(x) / 2 + 1)
   ))
-  if ("try-error" %in% class(spec)) {
-    entropy <- NA_real_
+  if (inherits(spec, "try-error")) {
+    entropy <- NA
   } else {
     fx <- c(rev(spec$spec[-1]), spec$spec) / length(x)
     fx <- fx / sum(fx)

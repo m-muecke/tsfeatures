@@ -101,7 +101,7 @@ arch_stat <- function(x, lags = 12, demean = TRUE) {
   }
   mat <- embed(x^2, lags + 1)
   fit <- try(lm(mat[, 1] ~ mat[, -1]), silent = TRUE)
-  if ("try-error" %in% class(fit)) {
+  if (inherits(fit, "try-error")) {
     return(c(ARCH.LM = NA_real_))
   } else {
     arch.lm <- summary(fit)

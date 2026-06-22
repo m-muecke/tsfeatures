@@ -130,7 +130,7 @@ scalets <- function(x) {
     return(x)
   }
   scaledx <- as.numeric(scale(x, center = TRUE, scale = TRUE))
-  if ("msts" %in% class(x)) {
+  if (inherits(x, "msts")) {
     msts <- attributes(x)$msts
     y <- forecast::msts(scaledx, seasonal.periods = msts)
   } else {
