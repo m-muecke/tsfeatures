@@ -288,7 +288,7 @@ firstmin_ac <- function(
   for (i in 1:length(autoCorr)) {
     if (is.na(autoCorr[i])) {
       warning("No minimum was found.")
-      return(NA)
+      return(NA_real_)
     }
     if (i == 2 && autoCorr[2] > autoCorr[1]) {
       return(1)
